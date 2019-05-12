@@ -6,7 +6,7 @@ const OBJECT_TYPE_MAP = new Map([
     [Mandelbulb, 2]
 ]);
 
-const MAX_OBJECTS = 256;
+const MAX_OBJECTS = 1;
 
 export {
     Sphere,

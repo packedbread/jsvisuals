@@ -13,7 +13,7 @@ float atan2(float y, float x)
 in vec3 camera_direction;
 
 const float INFINITY = 1e30;
-const float EPS = 1e-5;
+const float EPS = 1e-4;
 
 // >>> PRIMITIVE TYPES <<<
 
@@ -41,6 +41,7 @@ uniform vec4 u_object_params[MAX_OBJECTS];
 >> x: power
 >> y: border value
 
+>>> OBJECT PARAMETERS SCHEME END <<<
 */
 
 
@@ -51,7 +52,7 @@ float estimate_distance_to_sphere(vec3 point, uint object_index) {
     return distance(point, u_object_positions[object_index]) - radius;
 }
 
-const uint MAX_ITERATIONS = uint(256);
+const uint MAX_ITERATIONS = uint(8);
 
 float estimate_distance_to_mandelbulb(vec3 point, uint object_index) {
     float power = u_object_params[object_index].x;
@@ -104,14 +105,14 @@ float distance_estimator(vec3 point) {
     return dist;
 }
 
-const uint MAX_MARCH_STEPS = uint(256);
+const uint MAX_MARCH_STEPS = uint(48);
 
 // todo: add coloring modes (for normal scenes and for fractals)
 vec3 color_from_steps(uint steps) {
     float gray = 1.0 - float(steps) / float(MAX_MARCH_STEPS);
-    float r = gray;
-    float g = gray;
-    float b = 0.0;
+    float r = 0.5 * gray;
+    float g = 0.9 * gray;
+    float b = 0.3 * gray;
     return vec3(r, g, b);
 }
 

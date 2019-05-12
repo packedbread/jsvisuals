@@ -105,6 +105,7 @@ function draw() {
 }
 
 function update(dt) {
+    // rotate cam
     const angle = 0.0001;
     let p = scene.camera.position.copy();
     let ynorm = Math.sqrt(p.x * p.x + p.z * p.z);
@@ -116,6 +117,8 @@ function update(dt) {
     scene.camera.position = p;
     scene.camera.direction = camera_look_at.subtract(scene.camera.position).normalize();
     scene.camera.right = scene.camera.direction.cross(scene.camera.up);
+
+    // scene.objects[0].border_value += 0.01;
 }
 
 window.onload = setup;
