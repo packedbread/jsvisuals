@@ -1,6 +1,6 @@
 #version 300 es
 
-precision mediump float;
+precision highp float;
 
 const float PI = 3.14159265359;
 
@@ -24,6 +24,8 @@ const uint TYPE_MANDELBULB = uint(2);
 
 
 uniform float u_tolerance;
+uniform uint u_max_fractal_iterations;
+uniform uint u_max_march_steps;
 
 uniform uint u_object_count;
 uniform uint u_object_types[MAX_OBJECTS];
@@ -52,8 +54,6 @@ float estimate_distance_to_sphere(vec3 point, uint object_index) {
     return distance(point, u_object_positions[object_index]) - radius;
 }
 
-const uint MAX_ITERATIONS = uint(8);
-
 float estimate_distance_to_mandelbulb(vec3 point, uint object_index) {
     float power = u_object_params[object_index].x;
     float border_value = u_object_params[object_index].y;
@@ -61,7 +61,7 @@ float estimate_distance_to_mandelbulb(vec3 point, uint object_index) {
     vec3 z = point;
     float dr = 1.0;
     float r = 0.0;
-    for (uint i = uint(0); i < MAX_ITERATIONS; ++i) {
+    for (uint i = uint(0); i < u_max_fractal_iterations; ++i) {
         r = length(z);
         if (r > border_value) {
             break;
@@ -105,21 +105,18 @@ float distance_estimator(vec3 point) {
     return dist;
 }
 
-const uint MAX_MARCH_STEPS = uint(48);
-
+const vec3 START_COLOR = vec3(0.0, 0.0, 0.0);
+const vec3 END_COLOR = vec3(1.0, 0.0, 0.3);
 // todo: add coloring modes (for normal scenes and for fractals)
 vec3 color_from_steps(uint steps) {
-    float gray = 1.0 - float(steps) / float(MAX_MARCH_STEPS);
-    float r = 0.5 * gray;
-    float g = 0.9 * gray;
-    float b = 0.3 * gray;
-    return vec3(r, g, b);
+    float corr = float(steps) / float(u_max_march_steps);
+    return corr * START_COLOR + (1.0 - corr) * END_COLOR;
 }
 
 vec3 march(vec3 origin, vec3 direction) {
     float total_distance = 0.0;
     uint steps = uint(0);
-    for (; steps < MAX_MARCH_STEPS; ++steps) {
+    for (; steps < u_max_march_steps; ++steps) {
         vec3 point = origin + direction * total_distance;
         float dist = distance_estimator(point);
         total_distance += dist;

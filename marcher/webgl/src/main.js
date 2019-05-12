@@ -150,6 +150,14 @@ function key_handler(e) {
         scene.tolerance /= TOLERANCE_CHANGE_MULITPLIER
     } else if (e.key === 'e') {
         scene.tolerance *= TOLERANCE_CHANGE_MULITPLIER;
+    } else if (e.key === 'm') {
+        scene.max_fractal_iterations *= 2;
+    } else if (e.key === 'n') {
+        scene.max_fractal_iterations /= 2;
+    } else if (e.key === 'l') {
+        scene.max_march_steps *= 2;
+    } else if (e.key === 'k') {
+        scene.max_march_steps /= 2;
     }
 }
 

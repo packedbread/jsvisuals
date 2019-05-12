@@ -5,10 +5,12 @@ import {
 import { Camera } from './index.js';
 
 export default class Scene {
-    constructor(camera = new Camera(), objects = [], tolerance = 1e-4) {
+    constructor(camera = new Camera(), objects = [], tolerance = 1e-4, max_fractal_iterations = 8, max_march_steps = 64) {
         this.camera = camera;
         this.objects = objects;
         this.tolerance = tolerance;
+        this.max_fractal_iterations = max_fractal_iterations;
+        this.max_march_steps = max_march_steps;
     }
 
     get_uniforms() {
@@ -35,6 +37,8 @@ export default class Scene {
                     .map(x => x ? x : 0),
             u_camera_position: this.camera.position.to_array(),
             u_tolerance: this.tolerance,
+            u_max_fractal_iterations: this.max_fractal_iterations,
+            u_max_march_steps: this.max_march_steps,
         }
     }
 };
