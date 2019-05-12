@@ -60,6 +60,18 @@ export default class Vector {
         return this.subtract(ortho.scale(2));
     }
 
+    rotate(vector, angle) {
+        let projection = vector.scale(this.dot(vector) / this.dot(this));
+        let orthogonal = this.subtract(projection);
+        let normal = vector.cross(orthogonal);
+        if (normal.norm() === 0) {
+            return this.copy();
+        }
+        return orthogonal.scale(Math.cos(angle)).add(
+            normal.scale(Math.sin(angle) * orthogonal.norm() / normal.norm())
+        );
+    }
+
     to_array() {
         return [this.x, this.y, this.z];
     }

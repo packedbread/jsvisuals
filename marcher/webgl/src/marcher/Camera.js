@@ -15,6 +15,12 @@ export default class Camera {
         this.field_of_view = field_of_view;
     }
 
+    rotate(vector, angle) {
+        this.direction = this.direction.rotate(vector, angle);
+        this.right = this.right.rotate(vector, angle);
+        this.up = this.up.rotate(vector, angle);
+    }
+
     get_directions(width, height) {
         let half_width = Math.tan(this.field_of_view);
         let half_height = half_width * height / width;

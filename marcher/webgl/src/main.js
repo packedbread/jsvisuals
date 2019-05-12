@@ -8,6 +8,11 @@ import {
     utils,
 } from './marcher/index.js';
 
+
+const ROTATION_STEP = 0.1;
+const MOVE_STEP_MULTIPLIER = 100.0; // times scene.tolerance
+const TOLERANCE_CHANGE_MULITPLIER = 1.1;
+
 let gl = null;
 let program_info = null;
 let buffer_info = null;
@@ -19,6 +24,8 @@ async function setup() {
     await init_webgl();
     build_scene();
     init_drawing();
+
+    window.addEventListener('keydown', key_handler);
 }
 
 async function init_webgl() {
@@ -79,8 +86,8 @@ function init_drawing() {
         update(dt);
         fps_avg(dt);
 
-        if (iteration % 10 === 0) {
-            console.log(fps);
+        if (iteration % 100 === 0) {
+            console.debug(fps);
         }
 
         draw();
@@ -106,6 +113,7 @@ function draw() {
 
 function update(dt) {
     // rotate cam
+    /*
     const angle = 0.0001;
     let p = scene.camera.position.copy();
     let ynorm = Math.sqrt(p.x * p.x + p.z * p.z);
@@ -117,8 +125,32 @@ function update(dt) {
     scene.camera.position = p;
     scene.camera.direction = camera_look_at.subtract(scene.camera.position).normalize();
     scene.camera.right = scene.camera.direction.cross(scene.camera.up);
-
+    */
     // scene.objects[0].border_value += 0.01;
+}
+
+function key_handler(e) {
+    if (e.key === 'ArrowUp') {
+        scene.camera.rotate(scene.camera.right, ROTATION_STEP);
+    } else if (e.key === 'ArrowDown') {
+        scene.camera.rotate(scene.camera.right, -ROTATION_STEP);
+    } else if (e.key === 'ArrowLeft') {
+        scene.camera.rotate(scene.camera.up, ROTATION_STEP);
+    } else if (e.key === 'ArrowRight') {
+        scene.camera.rotate(scene.camera.up, -ROTATION_STEP);
+    } else if (e.key === 'w') {
+        scene.camera.position = scene.camera.position.add(scene.camera.direction.scale(MOVE_STEP_MULTIPLIER * scene.tolerance));
+    } else if (e.key === 'a') {
+        scene.camera.position = scene.camera.position.add(scene.camera.right.negate().scale(MOVE_STEP_MULTIPLIER * scene.tolerance));
+    } else if (e.key === 's') {
+        scene.camera.position = scene.camera.position.add(scene.camera.direction.negate().scale(MOVE_STEP_MULTIPLIER * scene.tolerance));
+    } else if (e.key === 'd') {
+        scene.camera.position = scene.camera.position.add(scene.camera.right.scale(MOVE_STEP_MULTIPLIER * scene.tolerance));
+    } else if (e.key === 'q') {
+        scene.tolerance /= TOLERANCE_CHANGE_MULITPLIER
+    } else if (e.key === 'e') {
+        scene.tolerance *= TOLERANCE_CHANGE_MULITPLIER;
+    }
 }
 
 window.onload = setup;

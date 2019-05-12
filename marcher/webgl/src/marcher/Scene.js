@@ -5,9 +5,10 @@ import {
 import { Camera } from './index.js';
 
 export default class Scene {
-    constructor(camera = new Camera(), objects = []) {
+    constructor(camera = new Camera(), objects = [], tolerance = 1e-4) {
         this.camera = camera;
         this.objects = objects;
+        this.tolerance = tolerance;
     }
 
     get_uniforms() {
@@ -32,7 +33,8 @@ export default class Scene {
                     .map(o => o.get_params_array())
                     .reduce((prev, cur) => prev.concat(cur), [])
                     .map(x => x ? x : 0),
-            u_camera_position: this.camera.position.to_array()
+            u_camera_position: this.camera.position.to_array(),
+            u_tolerance: this.tolerance,
         }
     }
 };

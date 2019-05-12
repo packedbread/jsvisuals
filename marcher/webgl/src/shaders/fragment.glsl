@@ -13,7 +13,7 @@ float atan2(float y, float x)
 in vec3 camera_direction;
 
 const float INFINITY = 1e30;
-const float EPS = 1e-4;
+const uint MAX_OBJECTS = uint(256);
 
 // >>> PRIMITIVE TYPES <<<
 
@@ -23,7 +23,7 @@ const uint TYPE_MANDELBULB = uint(2);
 // >>> PRIMITIVE TYPES END <<<
 
 
-const uint MAX_OBJECTS = uint(256);
+uniform float u_tolerance;
 
 uniform uint u_object_count;
 uniform uint u_object_types[MAX_OBJECTS];
@@ -123,7 +123,7 @@ vec3 march(vec3 origin, vec3 direction) {
         vec3 point = origin + direction * total_distance;
         float dist = distance_estimator(point);
         total_distance += dist;
-        if (dist < EPS) {
+        if (dist < u_tolerance) {
             break;
         }
     }
